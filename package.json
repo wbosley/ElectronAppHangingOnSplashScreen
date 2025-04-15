@@ -1,0 +1,29 @@
+{
+  "name": "electron-hanging-repro",
+  "version": "1.0.0",
+  "main": "./out/electron/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "vite:dev": "vite",
+    "package": "electron-packager . \"Electron hanging repro\" --ignore='^/out/(__tests__|__integration_tests__|testbench|shared|bin).*$' --ignore='^/(?!out|package).*$' --out=./binaries/ --asar --overwrite"
+  },
+  "private": true,
+  "packageManager": "yarn@4.9.0",
+  "dependencies": {
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
+  "devDependencies": {
+    "@electron/packager": "18.3.6",
+    "@types/node": "22.14.0",
+    "@types/react": "19.1.0",
+    "@types/react-dom": "19.1.2",
+    "@vitejs/plugin-react": "4.3.4",
+    "electron": "35.1.5",
+    "vite": "6.2.6",
+    "vite-plugin-electron": "0.29.0",
+    "vite-plugin-electron-renderer": "0.14.6",
+    "vite-plugin-static-copy": "2.3.1"
+  }
+}
