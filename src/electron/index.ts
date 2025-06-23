@@ -1,10 +1,19 @@
 import { BrowserWindow, app } from "electron";
+import fs from "fs";
+import path from "path";
+
+const logPath = path.join(app.getPath("userData"), "electron-debug.log");
+function log(msg: string) {
+  fs.appendFileSync(logPath, `[${new Date().toISOString()}] ${msg}\n`);
+}
 
 const __dirname = import.meta.dirname;
 
 let window: BrowserWindow;
 
 app.on("ready", async (): Promise<void> => {
+  log("App ready event fired");
+
   // once electron has started up, create a window.
   window = new BrowserWindow({
     minWidth: 1024,
@@ -22,6 +31,7 @@ app.on("ready", async (): Promise<void> => {
     titleBarStyle: process.platform === "win32" ? "hidden" : "default",
     titleBarOverlay: process.platform === "win32" ? { color: "#fff0", symbolColor: "#fff", height: 56 } : false,
   });
+  log("Main window created");
 
   // don't launch the splash screen in debug to avoid clobbering GUI tests.
   if (!process.argv.includes("no-splash")) {
@@ -35,9 +45,15 @@ app.on("ready", async (): Promise<void> => {
       transparent: true,
       show: false,
     });
+    log("Splash window created");
 
     splash.once("ready-to-show", () => {
+      log("Splash ready-to-show");
       splash.show();
+    });
+
+    splash.webContents.on("did-fail-load", (event, errorCode, errorDescription) => {
+      log(`Splash did-fail-load: ${errorCode} - ${errorDescription}`);
     });
 
     await splash.loadURL(
@@ -45,12 +61,18 @@ app.on("ready", async (): Promise<void> => {
     );
 
     window.once("ready-to-show", () => {
+      log("Main window ready-to-show, destroying splash");
       splash.destroy();
     });
   }
 
   window.once("ready-to-show", () => {
+    log("Main window ready-to-show, showing main window");
     window.show();
+  });
+
+  window.webContents.on("did-fail-load", (event, errorCode, errorDescription) => {
+    log(`Main window did-fail-load: ${errorCode} - ${errorDescription}`);
   });
 
   if (app.isPackaged) {
