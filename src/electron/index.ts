@@ -68,15 +68,18 @@ app.on("ready", async (): Promise<void> => {
 
   window.webContents.on("did-finish-load", () => {
     log("Main window did-finish-load");
-    // if (!window.isVisible()) {
-    //   window.show();
-    //   log("Main window shown after did-finish-load");
-    // }
+    if (!window.isVisible()) {
+      window.show();
+      log("Main window shown after did-finish-load");
+    }
   });
 
   window.once("ready-to-show", () => {
-    log("Main window ready-to-show, showing main window");
-    window.show();
+    log("Main window ready-to-show");
+    if (!window.isVisible()) {
+      window.show();
+      log("Main window shown after ready-to-show");
+    }
   });
 
   // Timeout fallback
