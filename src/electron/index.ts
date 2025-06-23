@@ -79,6 +79,14 @@ app.on("ready", async (): Promise<void> => {
     window.show();
   });
 
+  // Timeout fallback
+  setTimeout(() => {
+    if (!window.isVisible()) {
+      log("Timeout reached, showing main window");
+      window.show();
+    }
+  }, 30000); // 10 seconds
+
   window.webContents.on("did-fail-load", (event, errorCode, errorDescription) => {
     log(`Main window did-fail-load: ${errorCode} - ${errorDescription}`);
   });
